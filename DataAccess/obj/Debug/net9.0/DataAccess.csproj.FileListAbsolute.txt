@@ -12,3 +12,7 @@ D:\YuGiOh_backend\DataAccess\obj\Debug\net9.0\refint\DataAccess.dll
 D:\YuGiOh_backend\DataAccess\obj\Debug\net9.0\DataAccess.pdb
 D:\YuGiOh_backend\DataAccess\obj\Debug\net9.0\DataAccess.genruntimeconfig.cache
 D:\YuGiOh_backend\DataAccess\obj\Debug\net9.0\ref\DataAccess.dll
+D:\YuGiOh_backend\DataAccess\obj\Debug\net9.0\DataAccess.sourcelink.json
+D:\YuGiOh_backend\DataAccess\bin\Debug\net9.0\BusinessLogic.dll
+D:\YuGiOh_backend\DataAccess\bin\Debug\net9.0\BusinessLogic.pdb
+D:\YuGiOh_backend\DataAccess\obj\Debug\net9.0\DataAccess.csproj.Up2Date

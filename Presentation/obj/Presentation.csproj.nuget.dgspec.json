@@ -27,11 +27,7 @@
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
-            "projectReferences": {
-              "D:\\YuGiOh_backend\\DataAccess\\DataAccess.csproj": {
-                "projectPath": "D:\\YuGiOh_backend\\DataAccess\\DataAccess.csproj"
-              }
-            }
+            "projectReferences": {}
           }
         },
         "warningProperties": {
@@ -97,7 +93,11 @@
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj": {
+                "projectPath": "D:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj"
+              }
+            }
           }
         },
         "warningProperties": {

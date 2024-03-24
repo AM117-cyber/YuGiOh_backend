@@ -316,6 +316,9 @@ namespace Presentation.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("AdministrativeUserId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -330,6 +333,8 @@ namespace Presentation.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdministrativeUserId");
 
                     b.ToTable("Tournaments");
                 });
@@ -374,7 +379,7 @@ namespace Presentation.Migrations
                     b.ToTable("TournamentMatches");
                 });
 
-            modelBuilder.Entity("Tournament_Player", b =>
+            modelBuilder.Entity("TournamentPlayer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -402,7 +407,14 @@ namespace Presentation.Migrations
 
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("Tournament_Players");
+                    b.ToTable("TournamentPlayers");
+                });
+
+            modelBuilder.Entity("AdministrativeUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser<int>");
+
+                    b.HasDiscriminator().HasValue("AdministrativeUser");
                 });
 
             modelBuilder.Entity("Player", b =>
@@ -497,6 +509,17 @@ namespace Presentation.Migrations
                     b.Navigation("Province");
                 });
 
+            modelBuilder.Entity("Tournament", b =>
+                {
+                    b.HasOne("AdministrativeUser", "Administrator")
+                        .WithMany("TournamentsCreated")
+                        .HasForeignKey("AdministrativeUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Administrator");
+                });
+
             modelBuilder.Entity("TournamentMatch", b =>
                 {
                     b.HasOne("Player", "Player1")
@@ -512,7 +535,7 @@ namespace Presentation.Migrations
                         .IsRequired();
 
                     b.HasOne("Tournament", "Tournament")
-                        .WithMany()
+                        .WithMany("TournamentMatches")
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -524,7 +547,7 @@ namespace Presentation.Migrations
                     b.Navigation("Tournament");
                 });
 
-            modelBuilder.Entity("Tournament_Player", b =>
+            modelBuilder.Entity("TournamentPlayer", b =>
                 {
                     b.HasOne("Deck", "Deck")
                         .WithMany("TournamentPlayers")
@@ -554,7 +577,7 @@ namespace Presentation.Migrations
             modelBuilder.Entity("Player", b =>
                 {
                     b.HasOne("Municipality", "Municipality")
-                        .WithMany()
+                        .WithMany("Players")
                         .HasForeignKey("MunicipalityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -567,6 +590,11 @@ namespace Presentation.Migrations
                     b.Navigation("TournamentPlayers");
                 });
 
+            modelBuilder.Entity("Municipality", b =>
+                {
+                    b.Navigation("Players");
+                });
+
             modelBuilder.Entity("Province", b =>
                 {
                     b.Navigation("Municipalities");
@@ -574,7 +602,14 @@ namespace Presentation.Migrations
 
             modelBuilder.Entity("Tournament", b =>
                 {
+                    b.Navigation("TournamentMatches");
+
                     b.Navigation("TournamentPlayers");
+                });
+
+            modelBuilder.Entity("AdministrativeUser", b =>
+                {
+                    b.Navigation("TournamentsCreated");
                 });
 
             modelBuilder.Entity("Player", b =>

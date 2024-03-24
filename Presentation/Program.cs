@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 public class Program
 {
     public static void Main(string[] args)
@@ -27,10 +30,28 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSpecificOrigin",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                    //builder.AllowAnyOrigin()
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
+                });
+        });
+
+        // Other service configurations...
         services.AddControllers();
 
-        services.AddDbContext<ApplicationDbContext>(
-            options => options.UseNpgsql("name=ConnectionStrings:DefaultConnection"));
+        services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("Presentation")));
+
+        // services.AddDbContext<ApplicationDbContext>(
+        //     options => options.UseNpgsql("name=ConnectionStrings:DefaultConnection"));
 
         // services.AddIdentity<Player, IdentityRole<int>>()
         // .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -43,9 +64,17 @@ public class Startup
         services.AddScoped<RoleManager<IdentityRole<int>>>();
         services.AddScoped<RoleService>();
 
-        services.AddScoped<UserService>();
-        services.AddScoped<UserRepository>();
-        services.AddScoped<MunicipalityRepository>();
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITournamentService, TournamentService>();
+        services.AddScoped<ITournamentRepository, TournamentRepository>();
+        services.AddScoped<ITournamentPlayerService, TournamentPlayerService>();
+        services.AddScoped<ITournamentPlayerRepository, TournamentPlayerRepository>();
+        services.AddScoped<IDeckService, DeckService>();
+        services.AddScoped<IDeckRepository, DeckRepository>();
+        services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
 
     var key = Encoding.ASCII.GetBytes(Configuration["Jwt:Key"]);
     services.AddAuthentication(x =>
@@ -90,8 +119,10 @@ public class Startup
         // });
     }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, RoleManager<IdentityRole<int>> roleManager*/, ApplicationDbContext context, RoleService roleService)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, RoleManager<IdentityRole<int>> roleManager*/, ApplicationDbContext context, RoleService roleService)
     {
+        app.UseCors("AllowSpecificOrigin");
+        //app.UseCors("AllowAllOrigins");
     if (env.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();

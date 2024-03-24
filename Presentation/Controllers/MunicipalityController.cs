@@ -9,10 +9,10 @@ using Microsoft.IdentityModel.Tokens;
 [Route("municipality")]
 public class MunicipalityController : ControllerBase
 {
-    private readonly MunicipalityService _municipalityService;
+    private readonly IMunicipalityService _municipalityService;
     private readonly IConfiguration _configuration;
 
-    public MunicipalityController(MunicipalityService municipalityService, IConfiguration configuration)
+    public MunicipalityController(IMunicipalityService municipalityService, IConfiguration configuration)
     {
         _municipalityService = municipalityService;
         _configuration = configuration;

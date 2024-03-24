@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "URMaKSB5sEky/Ufb9ZQjF0U8+KjipCsdG667poXNcoKsZWxlfwDC7QeW7nPrEBiNNSvzgqoZYL7Dh6b3SwLAjw==",
+  "dgSpecHash": "p20P7lGc/TPKeWv/Hpuu9oDk0sZn/TJaAVTkO2Mju5X6FRg1p5czqD9nMP3YwZwtq/OQ9sJ8A1YtaaqgRdq+xg==",
   "success": true,
   "projectFilePath": "D:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj",
   "expectedPackageFiles": [
@@ -21,9 +21,7 @@
     "C:\\Users\\Melissa\\.nuget\\packages\\microsoft.extensions.logging\\8.0.0\\microsoft.extensions.logging.8.0.0.nupkg.sha512",
     "C:\\Users\\Melissa\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\Melissa\\.nuget\\packages\\microsoft.extensions.options\\8.0.2\\microsoft.extensions.options.8.0.2.nupkg.sha512",
-    "C:\\Users\\Melissa\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
-    "C:\\Users\\Melissa\\.nuget\\packages\\npgsql\\8.0.2\\npgsql.8.0.2.nupkg.sha512",
-    "C:\\Users\\Melissa\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\8.0.2\\npgsql.entityframeworkcore.postgresql.8.0.2.nupkg.sha512"
+    "C:\\Users\\Melissa\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512"
   ],
   "logs": [
     {

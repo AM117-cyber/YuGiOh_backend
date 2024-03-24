@@ -9,10 +9,10 @@ using Microsoft.IdentityModel.Tokens;
 [Route("user")]
 public class UserController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
     private readonly IConfiguration _configuration;
 
-    public UserController(UserService userService, IConfiguration configuration)
+    public UserController(IUserService userService, IConfiguration configuration)
     {
         _userService = userService;
         _configuration = configuration;
@@ -52,7 +52,7 @@ public class UserController : ControllerBase
         return CreatedAtAction("Register", new { Token = GenerateJwtToken(claims) });
     }
 
-    [HttpGet("login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto model)
     {
         var user = await _userService.LoginAsync(model);
@@ -76,6 +76,13 @@ public class UserController : ControllerBase
     {
         var users = await _userService.GetAllUsersAsync();
         return Ok(users);
+    }
+
+    [HttpGet("getPlayerProfile/{playerId}")]
+    public async Task<IActionResult> GetPlayerProfile(int playerId)
+    {
+        var profile = await _userService.GetPlayerProfile(playerId);
+        return Ok(profile);
     }
 
     [HttpPut("update")]
