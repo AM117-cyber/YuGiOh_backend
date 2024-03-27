@@ -27,4 +27,32 @@ public async Task<Deck> findById(int Id)
         .FirstOrDefaultAsync(m => m.Id == Id);
 }
 
+public async Task<IEnumerable<DeckArchetypeCountDto>> GetDeckArchetypeCount()
+{
+    var deckCounts = await _context.Decks
+        .GroupBy(d => d.Archetype)
+        .Select(g => new DeckArchetypeCountDto
+        {
+            Archetype = g.Key,
+            Count = g.Count()
+        })
+        .OrderByDescending(dto => dto.Count)
+        .ToListAsync();
+
+    return deckCounts;
+}
+
+
+public async Task<IEnumerable<string>> GetAllArchetypes()
+{
+    var archetypes = await _context.Decks
+        .Select(d => d.Archetype)
+        .Distinct()
+        .ToListAsync();
+
+    return archetypes;
+}
+
+
+
 }

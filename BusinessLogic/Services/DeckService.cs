@@ -34,8 +34,18 @@ public class DeckService: IDeckService
         return await _deckRepository.Create(deckForRepository);
     }
 
+    public Task<IEnumerable<string>> GetAllArchetypes()
+    {
+        return _deckRepository.GetAllArchetypes();
+    }
+
     public async Task<Deck> GetByName(string name)
     {
         return await _deckRepository.findByName(name);
+    }
+
+    public Task<IEnumerable<DeckArchetypeCountDto>> GetDeckArchetypeCount()
+    {
+        return _deckRepository.GetDeckArchetypeCount();
     }
 }

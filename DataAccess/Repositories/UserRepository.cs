@@ -89,6 +89,24 @@ public async Task<IEnumerable<UserOutDto>> GetAllUsersAsync()
     return player;
 }
 
+
+public async Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
+{
+    var players = await _userManager.Users
+        .OfType<Player>() // Only get Player users
+        .Include(p => p.Decks) // Include the Decks
+        .Select(p => new PlayerDeckCountDto // Select into a DTO
+        {
+            PlayerId = p.Id,
+            UserName = p.UserName,
+            DeckCount = p.Decks.Count
+        })
+        .OrderByDescending(dto => dto.DeckCount) // Order by deck count descending
+        .ToListAsync();
+
+    return players;
+}
+
     //     public async Task<IEnumerable<IdentityUser<int>>> GetAllUsersAsync()
     // {
     //     return await _userManager.Users.ToListAsync();

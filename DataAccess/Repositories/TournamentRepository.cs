@@ -54,6 +54,12 @@ public async Task<IEnumerable<Tournament>> GetTournamentsByAdmin(int adminUserId
         .ToListAsync();
     }
 
+        public async Task<IEnumerable<Tournament>> GetAllTournaments()
+    {
+        return await _context.Tournaments
+        .ToListAsync();
+    }
+
     public async Task UpdateTournament(Tournament tournament)
     {
         _context.Tournaments.Update(tournament);

@@ -67,9 +67,34 @@ public class TournamentService: ITournamentService
     await _tournamentRepository.DeleteTournament(tournament);
     }
 
-    public async Task<Tournament> GetByName(string name)
+    public async Task<IEnumerable<TournamentOutDto>> GetAllTournaments()
     {
-        return await _tournamentRepository.findByName(name);
+        var tournaments = await _tournamentRepository.GetAllTournaments();
+        var tournamentOutDtos = tournaments.Select(t => new TournamentOutDto 
+    { 
+        Name = t.Name, 
+        Id = t.Id, 
+        StartDate = t.StartDate,
+        Rounds = t.Rounds,
+        Address = t.Address,
+        PlayerAmount = t.PlayerAmount
+    }).ToList();
+
+    return tournamentOutDtos;
+    }
+
+    public async Task<TournamentOutDto> GetByName(string name)
+    {
+        var tournament = await _tournamentRepository.findByName(name);
+        var tournamentOutDto = new TournamentOutDto{
+        Name = tournament.Name, 
+        Id = tournament.Id, 
+        StartDate = tournament.StartDate,
+        Rounds = tournament.Rounds,
+        Address = tournament.Address,
+        PlayerAmount = tournament.PlayerAmount
+        };
+        return tournamentOutDto;
     }
 
     public async Task<IEnumerable<TournamentOutDto>> GetTournamentsByAdmin(int AdminId)

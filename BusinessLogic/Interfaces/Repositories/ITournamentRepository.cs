@@ -8,4 +8,5 @@ public interface ITournamentRepository
     Task<IEnumerable<Tournament>> GetUpcomingTournaments();
     Task UpdateTournament(Tournament tournament);
     Task DeleteTournament(Tournament tournament);
+    Task<IEnumerable<Tournament>> GetAllTournaments();
 }

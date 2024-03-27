@@ -72,6 +72,8 @@ public class Startup
         services.AddScoped<ITournamentRepository, TournamentRepository>();
         services.AddScoped<ITournamentPlayerService, TournamentPlayerService>();
         services.AddScoped<ITournamentPlayerRepository, TournamentPlayerRepository>();
+        services.AddScoped<ITournamentMatchService, TournamentMatchService>();
+        services.AddScoped<ITournamentMatchRepository, TournamentMatchRepository>();
         services.AddScoped<IDeckService, DeckService>();
         services.AddScoped<IDeckRepository, DeckRepository>();
         services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();

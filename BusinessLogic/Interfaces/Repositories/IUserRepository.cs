@@ -9,5 +9,7 @@ public interface IUserRepository
     Task<IdentityResult> UpdateUserAsync(IdentityUser<int> user);
     Task<Player> findByIdWithDeck(int id);
     Task<Player> GetPlayerWithDecks(int playerId);
+    Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount();
+
 }
 

@@ -20,8 +20,8 @@ public class TournamentController : ControllerBase
         return Ok(createdTournament);
     }
 
-    [HttpGet("getByName")]
-    public async Task<IActionResult> GetByName([FromQuery] string name)
+    [HttpGet("getByName/{name}")]
+    public async Task<IActionResult> GetByName(string name)
     {
         var tournament = await _tournamentService.GetByName(name);
         if (tournament == null)
@@ -38,7 +38,7 @@ public class TournamentController : ControllerBase
         return tournaments;
     }
     
-    [HttpPut("updateTournament/{tournament}")]
+    [HttpPut("updateTournament/{tournament}/{id}")]
     public async Task<IActionResult> UpdateTournament(TournamentInDto tournament, int id)
     {
         var updatedTournament = await _tournamentService.UpdateTournament(tournament, id);
@@ -56,6 +56,13 @@ public class TournamentController : ControllerBase
     public async Task<IEnumerable<TournamentOutDto>> UpcomingTournaments()
     {
         var tournaments = await _tournamentService.GetUpcomingTournaments();
+        return tournaments;
+    }
+
+    [HttpGet("allTournaments")]
+    public async Task<IEnumerable<TournamentOutDto>> GetAllTournaments()
+    {
+        var tournaments = await _tournamentService.GetAllTournaments();
         return tournaments;
     }
 }

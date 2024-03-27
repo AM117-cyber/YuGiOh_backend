@@ -25,8 +25,8 @@ public class MunicipalityController : ControllerBase
         return Ok(createdMunicipality);
     }
 
-    [HttpGet("getByName")]
-    public async Task<IActionResult> GetByName([FromQuery] string name)
+    [HttpGet("getByName/{name}")]
+    public async Task<IActionResult> GetByName(string name)
     {
         var municipality = await _municipalityService.GetByName(name);
         if (municipality == null)

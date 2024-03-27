@@ -21,7 +21,7 @@ public class TournamentMatchController : ControllerBase
     }
 
     [HttpGet("getByPlayers/{PlayersIds}")]
-    public async Task<IActionResult> GetByPlayers([FromQuery] (int Player1Id, int Player2Id) PlayersIds)
+    public async Task<IActionResult> GetByPlayers((int Player1Id, int Player2Id) PlayersIds)
     {
         var TournamentMatchOutDto = await _tournamentMatchService.GetByPlayers(PlayersIds.Player1Id, PlayersIds.Player2Id);
         return Ok(TournamentMatchOutDto);
@@ -34,7 +34,7 @@ public class TournamentMatchController : ControllerBase
         return Ok(updatedTournamentMatch);
     }
 
-    [HttpGet("getRoundMatches/{tournamentMatch}")]
+    [HttpGet("getRoundMatches/{tournamentId}/{round}")]
     public async Task<IEnumerable<TournamentMatchOutDto>> GetRoundMatches(int tournamentId, int round)
     {
         var matches = await _tournamentMatchService.GetRoundMatches(tournamentId, round);

@@ -20,8 +20,8 @@ public class DeckController : ControllerBase
         return Ok(createdDeck);
     }
 
-    [HttpGet("getByName")]
-    public async Task<IActionResult> GetByName([FromQuery] string name)
+    [HttpGet("getByName/{name}")]
+    public async Task<IActionResult> GetByName(string name)
     {
         var deck = await _deckService.GetByName(name);
         if (deck == null)
@@ -31,4 +31,15 @@ public class DeckController : ControllerBase
         return Ok(deck);
     }
     
+    [HttpGet("deckArchetypeCount")]
+    public Task<IEnumerable<DeckArchetypeCountDto>> GetDeckArchetypeCount()
+    {
+        return _deckService.GetDeckArchetypeCount();
+    }
+
+    [HttpGet("allArchetypes")]
+    public Task<IEnumerable<string>> GetAllArchetypes()
+    {
+        return _deckService.GetAllArchetypes();
+    }
 }

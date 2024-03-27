@@ -120,7 +120,11 @@ Player user = new Player
     return playerOutDto;
 }
 
+    public Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
+    {
+        return _userRepository.GetPlayersDeckCount();
     }
+}
 
 
 

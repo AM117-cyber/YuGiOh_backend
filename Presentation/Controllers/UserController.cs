@@ -91,6 +91,12 @@ public class UserController : ControllerBase
         await _userService.UpdateUserAsync(user);
         return NoContent();
     }
+
+    [HttpGet("playersDeckCount")]
+    public Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
+    {
+        return _userService.GetPlayersDeckCount();
+    }
 }
 
 

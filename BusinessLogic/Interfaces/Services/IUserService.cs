@@ -9,5 +9,6 @@ public interface IUserService
     Task<IEnumerable<UserOutDto>> GetAllUsersAsync();
     Task UpdateUserAsync(IdentityUser<int> user);
     Task<PlayerOutDto> GetPlayerProfile(int playerId);
+    Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount();
 
 }
