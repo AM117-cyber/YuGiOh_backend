@@ -3241,11 +3241,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\YuGiOh_backend\\Presentation\\Presentation.csproj",
+      "projectUniqueName": "d:\\YuGiOh_backend\\Presentation\\Presentation.csproj",
       "projectName": "Presentation",
-      "projectPath": "D:\\YuGiOh_backend\\Presentation\\Presentation.csproj",
+      "projectPath": "d:\\YuGiOh_backend\\Presentation\\Presentation.csproj",
       "packagesPath": "C:\\Users\\Melissa\\.nuget\\packages\\",
-      "outputPath": "D:\\YuGiOh_backend\\Presentation\\obj\\",
+      "outputPath": "d:\\YuGiOh_backend\\Presentation\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Melissa\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -3262,11 +3262,11 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "D:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj": {
-              "projectPath": "D:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj"
+            "d:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj": {
+              "projectPath": "d:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj"
             },
-            "D:\\YuGiOh_backend\\DataAccess\\DataAccess.csproj": {
-              "projectPath": "D:\\YuGiOh_backend\\DataAccess\\DataAccess.csproj"
+            "d:\\YuGiOh_backend\\DataAccess\\DataAccess.csproj": {
+              "projectPath": "d:\\YuGiOh_backend\\DataAccess\\DataAccess.csproj"
             }
           }
         }
@@ -3343,13 +3343,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-preview.1.24101.2/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
-    }
-  ]
+  }
 }

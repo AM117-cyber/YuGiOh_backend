@@ -7,8 +7,10 @@ public interface IUserService
    Task<IdentityUser<int>> LoginAsync(LoginDto model);
     Task<IList<string>> GetUserRolesAsync(IdentityUser<int> user);
     Task<IEnumerable<UserOutDto>> GetAllUsersAsync();
-    Task UpdateUserAsync(IdentityUser<int> user);
     Task<PlayerOutDto> GetPlayerProfile(int playerId);
     Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount();
-
+    Task<(IEnumerable<string>, int)> MostPopularProvinceForArchetype(string archetype);
+    Task<(IEnumerable<MunicipalityOutDto>, int)> MostPopularMunicipalityForArchetype(string archetype);
+    Task<PlayerOutDto> UpdatePlayer(PlayerInDto user);
+    Task<AdminOutDto> UpdateAdmin(int id, string address, string adminName);
 }

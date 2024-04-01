@@ -85,18 +85,23 @@ public class UserController : ControllerBase
         return Ok(profile);
     }
 
-    [HttpPut("update")]
-    public async Task<IActionResult> UpdateUser(IdentityUser<int> user)
+    [HttpPut("update/player")]
+    public async Task<IActionResult> UpdatePlayer(PlayerInDto user)
     {
-        await _userService.UpdateUserAsync(user);
-        return NoContent();
+       var result = await _userService.UpdatePlayer(user);
+       return Ok(result);
+        
     }
 
-    [HttpGet("playersDeckCount")]
-    public Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
+    [HttpPut("update/admin")]
+    public async Task<IActionResult> UpdateAdmin(int Id, string AdminName, string Address)
     {
-        return _userService.GetPlayersDeckCount();
+
+        var result = await _userService.UpdateAdmin(Id, Address, AdminName);
+        return Ok(result);
     }
+
+
 }
 
 

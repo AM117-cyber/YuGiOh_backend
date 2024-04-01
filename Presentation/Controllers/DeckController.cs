@@ -30,12 +30,6 @@ public class DeckController : ControllerBase
         }
         return Ok(deck);
     }
-    
-    [HttpGet("deckArchetypeCount")]
-    public Task<IEnumerable<DeckArchetypeCountDto>> GetDeckArchetypeCount()
-    {
-        return _deckService.GetDeckArchetypeCount();
-    }
 
     [HttpGet("allArchetypes")]
     public Task<IEnumerable<string>> GetAllArchetypes()

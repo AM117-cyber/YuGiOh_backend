@@ -73,6 +73,51 @@ public async Task<IEnumerable<UserOutDto>> GetAllUsersAsync()
 
     }
 
+    public async Task<Player> findPlayerById(int id)
+    {       
+            // Find the Player with the given Id and include their Decks
+    var user = await _userManager.Users
+        .OfType<Player>()
+        .SingleOrDefaultAsync(u => u.Id == id);
+
+    if (user == null)
+    {
+        throw new Exception("User not found");
+    }
+
+    var roles = await _userManager.GetRolesAsync(user);
+
+    if (!roles.Contains("Player"))
+    {
+        throw new Exception("User is not a Player");
+    }
+    return user;
+
+    }
+
+    public async Task<AdministrativeUser> findAdminById(int id)
+    {       
+            // Find the Player with the given Id and include their Decks
+    var user = await _userManager.Users
+        .OfType<AdministrativeUser>()
+        .SingleOrDefaultAsync(u => u.Id == id);
+
+    if (user == null)
+    {
+        throw new Exception("User not found");
+    }
+
+    var roles = await _userManager.GetRolesAsync(user);
+
+    if (!roles.Contains("Admin"))
+    {
+        throw new Exception("User is not an Admin");
+    }
+
+    return user;
+
+    }
+
     public async Task<Player> GetPlayerWithDecks(int playerId)
 {
     var player = await _userManager.Users
@@ -116,5 +161,93 @@ public async Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
     {
         return await _userManager.UpdateAsync(user);
     }
+
+    public async Task<(IEnumerable<string>, int)> GetMostPopularProvinceForArchetype (string givenArchetype)
+{
+    // Execute the query once and store the results in memory
+    var groupedResults = await _userManager.Users
+        .OfType<Player>()
+        .Where(p => p.Decks.Any(d => d.Archetype == givenArchetype))
+        .GroupBy(p => p.Municipality.Province.ProvinceName)
+        .Select(g => new { Location = g.Key, Count = g.Count() })
+        .ToListAsync();
+
+    // Find the max count
+    var maxCount = groupedResults.Max(g => g.Count);
+
+    // Get the locations with the max count
+    var mostPopularLocations = groupedResults
+        .Where(g => g.Count == maxCount)
+        .Select(g => g.Location)
+        .ToList();
+
+    return (mostPopularLocations, maxCount);
+}
+
+    public async Task<(IEnumerable<Municipality>, int)> GetMostPopularMunicipalityForArchetype(string givenArchetype)
+{
+    // Execute the query once and store the results in memory
+    var groupedResults = await _userManager.Users
+        .OfType<Player>()
+        .Where(p => p.Decks.Any(d => d.Archetype == givenArchetype))
+        .GroupBy(p => p.Municipality)
+        .Select(g => new { Location = g.Key, Count = g.Count() })
+        .ToListAsync();
+
+    // Find the max count
+    var maxCount = groupedResults.Max(g => g.Count);
+
+    // Get the locations with the max count
+    var mostPopularLocations = groupedResults
+        .Where(g => g.Count == maxCount)
+        .Select(g => g.Location)
+        .ToList();
+
+    return (mostPopularLocations, maxCount);
+}
+
+public async Task<IEnumerable<Municipality>> GetPlayersMunicipalities(IEnumerable<int> playersIds)
+{
+    var players = await _userManager.Users
+            .OfType<Player>() // Only get Player users
+            .Where(p => playersIds.Contains(p.Id))
+            .Include(p => p.Municipality)
+            .Include(p => p.Municipality.Province)
+            .ToListAsync();
+
+    var municipalities = players.Select(p => p.Municipality);
+    return municipalities;
+}
+
+
+
+
+
+    //     public async Task<(List<ILocationDto> locations, int count)> GetMostPopularLocationsForArchetype(string givenArchetype, string entity)
+    // {
+    //     // Execute the query once and store the results in memory
+    //     var groupedResults = await _userManager.Users
+    //         .OfType<Player>()
+    //         .Where(p => p.Decks.Any(d => d.Archetype == givenArchetype))
+    //         .GroupBy(groupByExpression)
+    //         .Select(g => new { Location = g.Key, Count = g.Count() })
+    //         .ToListAsync();
+
+    //     // Find the max count
+    //     var maxCount = groupedResults.Max(g => g.Count);
+
+    //     if (entity == "municipality")
+    //     {
+
+    //     }
+    //     // Get the locations with the max count
+    //     var mostPopularLocations = groupedResults
+    //         .Where(g => g.Count == maxCount)
+    //         .Select(g => g.Location)
+    //         .ToList();
+
+    //     return (mostPopularLocations, maxCount);
+    // }
+
 }
 

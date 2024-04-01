@@ -3,12 +3,14 @@ using System.Globalization;
 public class TournamentService: ITournamentService
 {
     private readonly ITournamentRepository _tournamentRepository;
+    private readonly IUserRepository _userRepository;
     private readonly ITournamentPlayerRepository _tournamentPlayerRepository;
 
-    public TournamentService(ITournamentRepository tournamentRepository, ITournamentPlayerRepository tournamentPlayerRepository)
+    public TournamentService(ITournamentRepository tournamentRepository, ITournamentPlayerRepository tournamentPlayerRepository, IUserRepository userRepository)
     {
         _tournamentRepository = tournamentRepository;
         _tournamentPlayerRepository = tournamentPlayerRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<Tournament> CreateTournament(TournamentInDto tournament)
@@ -154,6 +156,71 @@ public class TournamentService: ITournamentService
     return tournament;
 }
 
+    public async Task<TournamentPlayerOutDto> GetTournamentChampion(int tournamentId)
+    {
+        var tournament = await _tournamentRepository.findByIdWithMatches(tournamentId);
+
+        var finalRound = tournament.Rounds;
+        var finalMatch = tournament.TournamentMatches
+            .FirstOrDefault(tm => tm.Round == finalRound);
+
+        if (finalMatch == null)
+            {
+             throw new ArgumentException("El torneo no ha finalizado o no tiene los datos de todas sus partidas.");
+            }
+
+    // The player with the highest score in the final match is the champion
+    int championId = finalMatch.Player1Score > finalMatch.Player2Score
+        ? finalMatch.Player1Id
+        : finalMatch.Player2Id;
+
+    var tp = await _tournamentPlayerRepository.findByIdWithPlayerAndDeck(championId);
+    TournamentPlayerOutDto champion = new TournamentPlayerOutDto{
+        Id = tp.Id,
+        PlayerId = tp.PlayerId,
+        PlayerName = tp.Player.UserName,
+        DeckId = tp.DeckId,
+        DeckName = tp.Deck.Name,
+        TournamentId = tp.TournamentId,
+        TournamentName = tp.Tournament.Name
+    };
+
+    return champion;
+}
+
+    public async Task<IEnumerable<(string, int)>> winnerArchetypes(IEnumerable<int> tournamentsIds, DateTime startDate, DateTime endDate)
+    {
+    // Get the tournaments that started within the given period
+    List<TournamentPlayer> champions = [];
+    foreach (var tournamentId in tournamentsIds)
+    {
+        var tournament = await _tournamentRepository.findByIdWithMatches(tournamentId);
+        var finalRound = tournament.Rounds;
+        var finalMatch = tournament.TournamentMatches
+            .FirstOrDefault(tm => tm.Round == finalRound);
+
+        if (finalMatch == null || finalMatch.Date < startDate || finalMatch.Date > endDate)
+            {
+             throw new ArgumentException("El torneo no declaró su ganador en el período de tiempo especificado finalizado.");
+            }
+
+    // The player with the highest score in the final match is the champion
+    int championId = finalMatch.Player1Score > finalMatch.Player2Score
+        ? finalMatch.Player1Id
+        : finalMatch.Player2Id;
+
+    var tournamentChampion = await _tournamentPlayerRepository.findByIdWithPlayerAndDeck(championId);
+    champions.Add(tournamentChampion);
     }
+    
+    var result = champions
+        .GroupBy(champs => champs.Deck.Archetype) // Group by the archetype of the deck
+        .Select(g => (Archetype: g.Key, Count: g.Count())) // Select the archetype and the count
+        .OrderByDescending(t => t.Count); // Order by count descending
+
+    return result;
+}
+
+}
 
 

@@ -1,3 +1,4 @@
+
 public interface ITournamentService
 {
     Task<Tournament> CreateTournament(TournamentInDto tournament);
@@ -7,4 +8,6 @@ public interface ITournamentService
     Task DeleteTournament(int tournamentId);
     Task<IEnumerable<TournamentOutDto>> GetUpcomingTournaments();
     Task<IEnumerable<TournamentOutDto>> GetAllTournaments();
+    Task<TournamentPlayerOutDto> GetTournamentChampion(int tournamentId);
+    Task<IEnumerable<(string, int)>> winnerArchetypes(IEnumerable<int> tournamentsIds, DateTime startDate, DateTime endDate);
 }

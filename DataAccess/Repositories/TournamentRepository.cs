@@ -30,6 +30,13 @@ public async Task<Tournament> findById(int Id)
         .FirstOrDefaultAsync(m => m.Id == Id);
 }
 
+public async Task<Tournament> findByIdWithMatches(int Id)
+{
+    return await _context.Tournaments
+        .Include(t => t.TournamentMatches) // Eager loading
+        .FirstOrDefaultAsync(m => m.Id == Id);
+}
+
 public async Task<Tournament> findByIdWithPlayers(int Id)
 {
     var tournament = await _context.Tournaments
@@ -71,5 +78,12 @@ public async Task<IEnumerable<Tournament>> GetTournamentsByAdmin(int adminUserId
         _context.Tournaments.Remove(tournament);
 
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<Tournament>> GetAllTournamentsWithMatches()
+    {
+        return await _context.Tournaments
+                .Include(t => t.TournamentMatches)
+                .ToListAsync();
     }
 }

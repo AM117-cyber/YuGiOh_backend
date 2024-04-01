@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AzkMH+Ir5Qlt4bdbIeZ7BoZCKeilq7GW68w/EmPQyZM07G8pN3jE72u0XMAhv3TrJQxZE+pskxvVSEz3MuH2QQ==",
+  "dgSpecHash": "byRFi6DsMUjraYpyjAIQ17jLVOYI7hAYiMex2eRCADnbxxP1WYCer8ZVtQATKO4hZ4/YpzW9mwO8L6DoY0mPDg==",
   "success": true,
-  "projectFilePath": "D:\\YuGiOh_backend\\Presentation\\Presentation.csproj",
+  "projectFilePath": "d:\\YuGiOh_backend\\Presentation\\Presentation.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Melissa\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Melissa\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.3\\microsoft.aspnetcore.authentication.jwtbearer.8.0.3.nupkg.sha512",
@@ -65,12 +65,5 @@
     "C:\\Users\\Melissa\\.nuget\\packages\\system.text.json\\8.0.0\\system.text.json.8.0.0.nupkg.sha512",
     "C:\\Users\\Melissa\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
-    }
-  ]
+  "logs": []
 }

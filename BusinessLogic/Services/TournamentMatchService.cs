@@ -4,11 +4,13 @@ using System.Globalization;
 public class TournamentMatchService: ITournamentMatchService
 {
     private readonly ITournamentMatchRepository _tournamentMatchRepository;
+    private readonly ITournamentPlayerRepository _tournamentPlayerRepository;
     private readonly ITournamentRepository _tournamentRepository;
 
-    public TournamentMatchService(ITournamentMatchRepository tournamentMatchRepository,ITournamentRepository tournamentRepository)
+    public TournamentMatchService(ITournamentMatchRepository tournamentMatchRepository, ITournamentPlayerRepository tournamentPlayerRepository, ITournamentRepository tournamentRepository)
     {
         _tournamentMatchRepository = tournamentMatchRepository;
+        _tournamentPlayerRepository = tournamentPlayerRepository;
         _tournamentRepository = tournamentRepository;
     }
 
@@ -113,4 +115,30 @@ public class TournamentMatchService: ITournamentMatchService
         };
         return result;
     }
+
+    public async Task<IEnumerable<(string, int)>> getPlayersWithVictories(DateTime startDate, DateTime endDate)
+{
+    var matches = await _tournamentMatchRepository.GetMatchesWithPlayersNames(startDate, endDate);
+    var result = matches
+        .GroupBy(m => (m.Player1Score > m.Player2Score) ? m.Player1.UserName : m.Player2.UserName) // Group by the winner's username
+        .Select(g => (UserName: g.Key, Count: g.Count())) // Select the username and the count
+        .OrderByDescending(t => t.Count); // Order by count descending
+
+    return result;
+}
+
+    public async Task<IEnumerable<(string, int)>> mostPopularArchetypeInTournamentRound(int tournamentId, int round)
+    {
+        var matches = await _tournamentMatchRepository.GetRoundMatches(tournamentId,round);
+        var playersIds = matches
+            .SelectMany(m => new[] { m.Player1.Id, m.Player2.Id }) // Select the Ids of both players in each match
+            .Distinct(); // Remove duplicates
+        IEnumerable<TournamentPlayer> tournamentPlayers = await _tournamentPlayerRepository.TournamentPlayerWithDeckArchetype(tournamentId, playersIds);    
+        var result = tournamentPlayers
+            .GroupBy(tp => tp.Deck.Archetype)
+            .Select(g => (Archetype: g.Key, Count: g.Count()))
+            .OrderByDescending(t => t.Count);
+        return result;
+}
+
 }

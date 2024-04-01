@@ -81,11 +81,11 @@ Player user = new Player
         return await _userRepository.GetAllUsersAsync();
     }
 
-    public async Task UpdateUserAsync(IdentityUser<int> user)
-    {
-        // Add any business logic here
-        await _userRepository.UpdateUserAsync(user);
-    }
+    // public async Task UpdateUserAsync(IdentityUser<int> user)
+    // {
+    //     // Add any business logic here
+    //     await _userRepository.UpdateUserAsync(user);
+    // }
 
     public async Task<PlayerOutDto> GetPlayerProfile(int playerId)
     {
@@ -120,9 +120,41 @@ Player user = new Player
     return playerOutDto;
 }
 
-    public Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
+    public async Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
     {
-        return _userRepository.GetPlayersDeckCount();
+        return await _userRepository.GetPlayersDeckCount();
+    }
+
+    public async Task<(IEnumerable<string>, int)> MostPopularProvinceForArchetype(string archetype)
+    {   
+        var result = await _userRepository.GetMostPopularProvinceForArchetype(archetype);
+        return result;
+    }
+
+    public async Task<(IEnumerable<MunicipalityOutDto>, int)> MostPopularMunicipalityForArchetype(string archetype)
+    {
+        (IEnumerable<Municipality> municipalities, int count) result = await _userRepository.GetMostPopularMunicipalityForArchetype(archetype);
+        IEnumerable<MunicipalityOutDto> municipalityOutDtos = result.municipalities.Select(m => new MunicipalityOutDto 
+        { 
+            Name = m.Name,
+            ProvinceName = m.Province.ProvinceName
+        }).ToList();
+        return (municipalityOutDtos, result.count);
+    }
+
+    public async Task<PlayerOutDto> UpdatePlayer(PlayerInDto user)
+    {
+        throw new ArgumentException("Not implemented");
+        // var player = await _userRepository.findPlayerById(user.Id);
+        // player.Address = user.Address;
+        // player.PasswordHash = 
+
+    }
+
+    public async Task<AdminOutDto> UpdateAdmin(int id, string address, string adminName)
+    {
+        throw new ArgumentException("Not implemented");
+        //var admin = await _userRepository.findAdminById(id);
     }
 }
 

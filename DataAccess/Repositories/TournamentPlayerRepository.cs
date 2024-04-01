@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 public class TournamentPlayerRepository: ITournamentPlayerRepository
 {
@@ -11,6 +12,12 @@ public class TournamentPlayerRepository: ITournamentPlayerRepository
         _context = context;
     }
 
+    public async Task<IEnumerable<TournamentPlayer>> AllTournamentPlayersWithArchetypes()
+    {
+        return await _context.TournamentPlayers
+                        .Include(tp => tp.Deck.Archetype)
+                        .ToListAsync();
+    }           
     public async Task<TournamentPlayer> Create(TournamentPlayer tournamentPlayer)
     {
         _context.TournamentPlayers.Add(tournamentPlayer);
@@ -53,6 +60,14 @@ public async Task<bool> findTournamentPlayer(TournamentPlayerInDto tournamentPla
 public async Task<TournamentPlayer> findById(int Id)
 {
     return await _context.TournamentPlayers
+        .FirstOrDefaultAsync(m => m.Id == Id);
+}
+
+public async Task<TournamentPlayer> findByIdWithPlayerAndDeck(int Id)
+{
+    return await _context.TournamentPlayers
+        .Include(tp => tp.Player.UserName)
+        .Include(tp => tp.Deck)
         .FirstOrDefaultAsync(m => m.Id == Id);
 }
 
@@ -100,4 +115,15 @@ public async Task DeleteSolicitude(int tournamentPlayerId)
 
         await _context.SaveChangesAsync();
     }
+
+    public async Task<IEnumerable<TournamentPlayer>> TournamentPlayerWithDeckArchetype(int tournamentId, IEnumerable<int> playersIds)
+    {
+        var tournamentPlayers = await _context.TournamentPlayers
+            .Where(tp => tp.TournamentId == tournamentId && playersIds.Contains(tp.PlayerId))
+            .Include(tp => tp.Deck.Archetype)
+            .ToListAsync();
+
+        return tournamentPlayers;
+    }
+
 }

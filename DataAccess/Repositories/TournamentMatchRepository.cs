@@ -48,4 +48,11 @@ public class TournamentMatchRepository: ITournamentMatchRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task<IEnumerable<TournamentMatch>> GetMatchesWithPlayersNames(DateTime startDate, DateTime endDate)
+    {
+        return await _context.TournamentMatches
+            .Where(m => m.Date > startDate && m.Date < endDate)
+            .ToListAsync();
+    }
+
 }
