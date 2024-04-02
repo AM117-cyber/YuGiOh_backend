@@ -13,4 +13,5 @@ public interface IUserService
     Task<(IEnumerable<MunicipalityOutDto>, int)> MostPopularMunicipalityForArchetype(string archetype);
     Task<PlayerOutDto> UpdatePlayer(PlayerInDto user);
     Task<AdminOutDto> UpdateAdmin(AdminInDto admin);
+    Task<bool> findSuperAdmin();
 }

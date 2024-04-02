@@ -223,6 +223,13 @@ Player user = new Player
     };
     return adminOutDto;
     }
+
+    public async Task<bool> findSuperAdmin()
+    {
+        var result = await _userRepository.FindSuperAdmin();
+        
+        return result;
+    }
 }
 
 

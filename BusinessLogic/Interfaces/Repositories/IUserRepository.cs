@@ -18,6 +18,6 @@ public interface IUserRepository
     Task<(IEnumerable<string>, int)> GetMostPopularProvinceForArchetype(string archetype);
     Task<Player> findPlayerByName(string userName);
     Task<AdministrativeUser> findAdminUserByName(string userName);
-
+    Task<bool> FindSuperAdmin();
 }
 

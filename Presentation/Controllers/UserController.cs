@@ -78,6 +78,14 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
+    [HttpGet("isSuperAdminCreated")]
+    public async Task<IActionResult> FindSuperAdmin()
+    {
+        var users = await _userService.findSuperAdmin();
+        return Ok(users);
+    }
+
+
     [HttpGet("getPlayerProfile/{playerId}")]
     public async Task<IActionResult> GetPlayerProfile(int playerId)
     {

@@ -121,8 +121,8 @@ public class Startup
         // });
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context, RoleService roleService)
-    {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context, RoleService roleService)
+        {
         app.UseCors("AllowSpecificOrigin");
         //app.UseCors("AllowAllOrigins");
     if (env.IsDevelopment())
@@ -150,14 +150,14 @@ public class Startup
             pattern: "{controller=Home}/{action=Index}/{id?}");
         });
 
-    // Seed data
-    SeedData(context);
+        // Seed data
+        SeedData(context);
 
-    context.Database.Migrate();  // Ensure the database is created and all migrations are applied
-    roleService.CreateRoles().Wait();  // Now you can create the roles
-    // Create roles on startup
-    // CreateRoles(roleManager).Wait();
-}
+        context.Database.Migrate();  // Ensure the database is created and all migrations are applied
+        roleService.CreateRoles().Wait();  // Now you can create the roles
+        // Create roles on startup
+        // CreateRoles(roleManager).Wait();
+    }
 
 
 private async void SeedData(ApplicationDbContext context)

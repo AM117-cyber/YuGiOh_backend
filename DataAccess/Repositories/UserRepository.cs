@@ -242,6 +242,14 @@ public async Task<IEnumerable<Municipality>> GetPlayersMunicipalities(IEnumerabl
         return admin;
     }
 
+    public async Task<bool> FindSuperAdmin()
+{
+    var superAdmin = await _userManager.GetUsersInRoleAsync("SuperAdministrator");
+
+    return superAdmin.Count > 0;
+}
+
+
 
 
 
