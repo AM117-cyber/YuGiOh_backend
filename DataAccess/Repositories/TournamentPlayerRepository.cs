@@ -25,7 +25,7 @@ public class TournamentPlayerRepository: ITournamentPlayerRepository
         return tournamentPlayer;
     }
 
-    public async Task<TournamentPlayerOutDto> GetTournamentOutDto(int tournamentPlayerId)
+    public async Task<TournamentPlayer> GetTournamentPlayer(int tournamentPlayerId)
 {
     var tournamentPlayer = await _context.TournamentPlayers
         .Include(tp => tp.Player)
@@ -33,22 +33,7 @@ public class TournamentPlayerRepository: ITournamentPlayerRepository
         .Include(tp => tp.Tournament)
         .SingleOrDefaultAsync(tp => tp.Id == tournamentPlayerId);
 
-    if (tournamentPlayer == null)
-    {
-        throw new Exception("TournamentPlayer not found");
-    }
-
-    var tournamentOutDto = new TournamentPlayerOutDto
-    {
-        PlayerId = tournamentPlayer.PlayerId,
-        PlayerName = tournamentPlayer.Player.UserName,
-        DeckId = tournamentPlayer.DeckId,
-        DeckName = tournamentPlayer.Deck.Name,
-        TournamentId = tournamentPlayer.TournamentId,
-        TournamentName = tournamentPlayer.Tournament.Name
-    };
-
-    return tournamentOutDto;
+    return tournamentPlayer;
 }
 
 public async Task<bool> findTournamentPlayer(TournamentPlayerInDto tournamentPlayer)

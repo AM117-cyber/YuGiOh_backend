@@ -16,5 +16,8 @@ public interface IUserRepository
     Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount();
     Task<(IEnumerable<Municipality>, int)> GetMostPopularMunicipalityForArchetype(string archetype);
     Task<(IEnumerable<string>, int)> GetMostPopularProvinceForArchetype(string archetype);
+    Task<Player> findPlayerByName(string userName);
+    Task<AdministrativeUser> findAdminUserByName(string userName);
+
 }
 

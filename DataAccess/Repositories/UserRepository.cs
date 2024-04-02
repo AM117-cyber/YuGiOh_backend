@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 public class UserRepository: IUserRepository
 {
     private readonly UserManager<IdentityUser<int>> _userManager;
+    private readonly IApplicationDbContext _context;
 
-    public UserRepository(UserManager<IdentityUser<int>> userManager)
+    public UserRepository(UserManager<IdentityUser<int>> userManager, IApplicationDbContext context)
     {
         _userManager = userManager;
+        _context = context;
     }
 
     public async Task<IdentityResult> CreateAsync(IdentityUser<int> user, string password)
@@ -36,7 +38,7 @@ public async Task<IEnumerable<UserOutDto>> GetAllUsersAsync()
             // Add additional properties here
         };
 
-        if (user is Player player)
+        if (roles is Player player)
         {
             userDto.Address = player.Address;
             userDto.PhoneNumber = player.PhoneNumber;
@@ -75,7 +77,7 @@ public async Task<IEnumerable<UserOutDto>> GetAllUsersAsync()
 
     public async Task<Player> findPlayerById(int id)
     {       
-            // Find the Player with the given Id and include their Decks
+        
     var user = await _userManager.Users
         .OfType<Player>()
         .SingleOrDefaultAsync(u => u.Id == id);
@@ -109,7 +111,7 @@ public async Task<IEnumerable<UserOutDto>> GetAllUsersAsync()
 
     var roles = await _userManager.GetRolesAsync(user);
 
-    if (!roles.Contains("Admin"))
+    if (!roles.Contains("Administrator"))
     {
         throw new Exception("User is not an Admin");
     }
@@ -144,7 +146,7 @@ public async Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
         {
             PlayerId = p.Id,
             UserName = p.UserName,
-            DeckCount = p.Decks.Count
+            DeckCount = p.Decks.Where(d => d.MyStatus == EntityStatus.visible).Count()
         })
         .OrderByDescending(dto => dto.DeckCount) // Order by deck count descending
         .ToListAsync();
@@ -159,7 +161,10 @@ public async Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
 
     public async Task<IdentityResult> UpdateUserAsync(IdentityUser<int> user)
     {
-        return await _userManager.UpdateAsync(user);
+        var result = await _userManager.UpdateAsync(user);
+        await _context.SaveChangesAsync();
+        return result;
+
     }
 
     public async Task<(IEnumerable<string>, int)> GetMostPopularProvinceForArchetype (string givenArchetype)
@@ -167,7 +172,7 @@ public async Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
     // Execute the query once and store the results in memory
     var groupedResults = await _userManager.Users
         .OfType<Player>()
-        .Where(p => p.Decks.Any(d => d.Archetype == givenArchetype))
+        .Where(p => p.Decks.Any(d => d.Archetype == givenArchetype && d.MyStatus == EntityStatus.visible))
         .GroupBy(p => p.Municipality.Province.ProvinceName)
         .Select(g => new { Location = g.Key, Count = g.Count() })
         .ToListAsync();
@@ -218,6 +223,25 @@ public async Task<IEnumerable<Municipality>> GetPlayersMunicipalities(IEnumerabl
     var municipalities = players.Select(p => p.Municipality);
     return municipalities;
 }
+
+    public async Task<Player> findPlayerByName(string userName)
+{
+    var player = await _userManager.Users
+        .OfType<Player>() // Only get Player users
+        .Where(p => p.UserName == userName) // Use a lambda expression for the predicate
+        .FirstOrDefaultAsync();
+    return player;
+}
+
+    public async Task<AdministrativeUser> findAdminUserByName(string userName)
+    {
+        var admin = await _userManager.Users
+            .OfType<AdministrativeUser>() // Only get Player users
+            .Where(p => p.UserName == userName) // Use a lambda expression for the predicate
+            .FirstOrDefaultAsync();
+        return admin;
+    }
+
 
 
 

@@ -31,7 +31,7 @@ public class TournamentPlayerService: ITournamentPlayerService
         throw new ArgumentException("Este jugador ya solicitó unirse a este torneo");
     }
         Tournament tournament = await _tournamentRepository.findById(tournamentPlayer.TournamentId);
-        if (DateTime.Now >= tournament.StartDate)
+        if (DateTime.UtcNow >= tournament.StartDate)
         {
             throw new ArgumentException("El plazo de inscripción en este torneo caducó");
         }
@@ -45,7 +45,21 @@ public class TournamentPlayerService: ITournamentPlayerService
         };
 
         var tournamentPlayerFromRepository = await _tournamentPlayerRepository.Create(tournamentPlayerForRepository);
-        var tournamentPlayerOutDto = await _tournamentPlayerRepository.GetTournamentOutDto(tournamentPlayerFromRepository.Id);
+        var tournamentPlayerForDto = await _tournamentPlayerRepository.GetTournamentPlayer(tournamentPlayerFromRepository.Id);
+        if (tournamentPlayer == null)
+    {
+        throw new Exception("TournamentPlayer not found");
+    }
+
+    var tournamentPlayerOutDto = new TournamentPlayerOutDto
+    {
+        PlayerId = tournamentPlayerForDto.PlayerId,
+        PlayerName = tournamentPlayerForDto.Player.UserName,
+        DeckId = tournamentPlayerForDto.DeckId,
+        DeckName = tournamentPlayerForDto.Deck.Name,
+        TournamentId = tournamentPlayerForDto.TournamentId,
+        TournamentName = tournamentPlayerForDto.Tournament.Name
+    };
     return tournamentPlayerOutDto;
 }
 
@@ -110,12 +124,12 @@ public class TournamentPlayerService: ITournamentPlayerService
 
     public async Task<(IEnumerable<MunicipalityOutDto>, int)> mostWinnersMunicipality(DateTime startDate, DateTime endDate)
     {
-        var allTournaments = await _tournamentRepository.GetAllTournamentsWithMatches();
+        var allTournaments = await _tournamentRepository.GetStartedTournamentsWithMatches();
         //get all winners
             List<int> championsIds = [];
             foreach (var tournament in allTournaments)
             {
-                var finalRound = tournament.Rounds;
+                var finalRound = 1;
                 var finalMatch = tournament.TournamentMatches
                     .FirstOrDefault(tm => tm.Round == finalRound);
 
@@ -148,12 +162,12 @@ public class TournamentPlayerService: ITournamentPlayerService
 
     public async Task<(IEnumerable<string>, int)> mostWinnersProvince(DateTime startDate, DateTime endDate)
     {
-        var allTournaments = await _tournamentRepository.GetAllTournamentsWithMatches();
+        var allTournaments = await _tournamentRepository.GetStartedTournamentsWithMatches();
         //get all winners
             List<int> championsIds = [];
             foreach (var tournament in allTournaments)
             {
-                var finalRound = tournament.Rounds;
+                var finalRound = 1;
                 var finalMatch = tournament.TournamentMatches
                     .FirstOrDefault(tm => tm.Round == finalRound);
 

@@ -237,6 +237,8 @@ namespace Presentation.Migrations
                     Address = table.Column<string>(type: "text", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Rounds = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    PlayersSubscribed = table.Column<int>(type: "integer", nullable: false),
                     PlayerAmount = table.Column<int>(type: "integer", nullable: false),
                     AdministrativeUserId = table.Column<int>(type: "integer", nullable: false)
                 },

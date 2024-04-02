@@ -121,7 +121,7 @@ public class Startup
         // });
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, RoleManager<IdentityRole<int>> roleManager*/, ApplicationDbContext context, RoleService roleService)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context, RoleService roleService)
     {
         app.UseCors("AllowSpecificOrigin");
         //app.UseCors("AllowAllOrigins");
@@ -159,7 +159,8 @@ public class Startup
     // CreateRoles(roleManager).Wait();
 }
 
-private void SeedData(ApplicationDbContext context)
+
+private async void SeedData(ApplicationDbContext context)
 {
     // Check if data is already seeded
     if (context.Provinces.Any())
@@ -201,6 +202,7 @@ var provinces = new Dictionary<string, List<string>>()
                 }
             }
 
+        
             context.SaveChanges();
             Console.WriteLine("Seed data added successfully.");
 }

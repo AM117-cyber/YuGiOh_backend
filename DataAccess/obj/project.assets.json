@@ -2461,11 +2461,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\YuGiOh_backend\\DataAccess\\DataAccess.csproj",
+      "projectUniqueName": "D:\\YuGiOh_backend\\DataAccess\\DataAccess.csproj",
       "projectName": "DataAccess",
-      "projectPath": "d:\\YuGiOh_backend\\DataAccess\\DataAccess.csproj",
+      "projectPath": "D:\\YuGiOh_backend\\DataAccess\\DataAccess.csproj",
       "packagesPath": "C:\\Users\\Melissa\\.nuget\\packages\\",
-      "outputPath": "d:\\YuGiOh_backend\\DataAccess\\obj\\",
+      "outputPath": "D:\\YuGiOh_backend\\DataAccess\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Melissa\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2482,8 +2482,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "d:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj": {
-              "projectPath": "d:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj"
+            "D:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj": {
+              "projectPath": "D:\\YuGiOh_backend\\BusinessLogic\\BusinessLogic.csproj"
             }
           }
         }

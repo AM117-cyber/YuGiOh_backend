@@ -326,11 +326,17 @@ namespace Presentation.Migrations
                     b.Property<int>("PlayerAmount")
                         .HasColumnType("integer");
 
+                    b.Property<int>("PlayersSubscribed")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Rounds")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

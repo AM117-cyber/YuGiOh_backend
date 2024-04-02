@@ -59,10 +59,31 @@ public class TournamentController : ControllerBase
         return tournaments;
     }
 
+    [HttpGet("tournamentsAwaitingConfirmation")]
+    public async Task<IEnumerable<TournamentOutDto>> TournamentsAwaitingConfirmation()
+    {
+        var tournaments = await _tournamentService.GetTournamentsAwaitingConfirmation();
+        return tournaments;
+    }
+
+    [HttpGet("startedTournaments")]
+    public async Task<IEnumerable<TournamentOutDto>> StartedTournaments()
+    {
+        var tournaments = await _tournamentService.GetStartedTournaments();
+        return tournaments;
+    }
+    
     [HttpGet("allTournaments")]
     public async Task<IEnumerable<TournamentOutDto>> GetAllTournaments()
     {
         var tournaments = await _tournamentService.GetAllTournaments();
         return tournaments;
+    }
+
+    [HttpPut("confirmTournamentStart")]
+    public async Task<IActionResult> ConfirmTournamentStart(int tournamentId)
+    {
+        var result = await _tournamentService.ConfirmTournamentStart(tournamentId);
+        return Ok(result);
     }
 }

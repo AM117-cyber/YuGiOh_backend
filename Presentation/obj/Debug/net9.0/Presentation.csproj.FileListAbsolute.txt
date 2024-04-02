@@ -117,3 +117,5 @@ D:\YuGiOh_backend\Presentation\bin\Debug\net9.0\Microsoft.IdentityModel.Protocol
 D:\YuGiOh_backend\Presentation\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
 D:\YuGiOh_backend\Presentation\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 D:\YuGiOh_backend\Presentation\obj\Debug\net9.0\Presentation.sourcelink.json
+D:\YuGiOh_backend\Presentation\bin\Debug\net9.0\Presentation.staticwebassets.runtime.json
+D:\YuGiOh_backend\Presentation\bin\Debug\net9.0\Microsoft.AspNetCore.Identity.UI.dll

@@ -4,7 +4,7 @@ public interface ITournamentPlayerRepository
     Task<TournamentPlayer> Create(TournamentPlayer tournamentPlayer);
     Task<TournamentPlayer> findById(int Id);
     Task<TournamentPlayer> findByIdWithPlayerAndDeck(int Id);
-    Task<TournamentPlayerOutDto> GetTournamentOutDto(int tournamentPlayerId);
+    Task<TournamentPlayer> GetTournamentPlayer(int tournamentPlayerId);
     Task<bool> findTournamentPlayer(TournamentPlayerInDto tournamentPlayer);
     Task<IEnumerable<TournamentPlayer>> GetHiddenTournamentPlayers(int tournamentId);
     Task AcceptSolicitude(TournamentPlayer tournamentPlayer);

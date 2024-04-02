@@ -38,7 +38,7 @@ public class UserController : ControllerBase
         var result = await _userService.RegisterAsync(model);
         if (!result.Succeeded) return BadRequest(result.Errors);
 
-        var user = await _userService.LoginAsync(new LoginDto(model.UserName, model.Password));
+        var user = await _userService.LoginAsync(new LoginDto(model.UserName, model.Password, model.Role));
         var roles = await _userService.GetUserRolesAsync(user);
 
         var claims = new List<Claim>
@@ -94,10 +94,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("update/admin")]
-    public async Task<IActionResult> UpdateAdmin(int Id, string AdminName, string Address)
+    public async Task<IActionResult> UpdateAdmin(AdminInDto admin)
     {
 
-        var result = await _userService.UpdateAdmin(Id, Address, AdminName);
+        var result = await _userService.UpdateAdmin(admin);
         return Ok(result);
     }
 

@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Presentation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240323021910_InitialCreate")]
+    [Migration("20240402140810_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -329,11 +329,17 @@ namespace Presentation.Migrations
                     b.Property<int>("PlayerAmount")
                         .HasColumnType("integer");
 
+                    b.Property<int>("PlayersSubscribed")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Rounds")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

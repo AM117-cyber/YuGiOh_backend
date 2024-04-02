@@ -15,7 +15,7 @@ public class DeckService: IDeckService
     {
         Player player = await _userRepository.findByIdWithDeck(deck.PlayerId);
         var existingDeck = player.Decks
-        .Any(d => d.Name == deck.Name);
+        .Any(d => d.Name == deck.Name && d.MyStatus == EntityStatus.visible);
     if (existingDeck)
     {
         throw new ArgumentException("A deck with this name already exists for this player");
@@ -32,6 +32,17 @@ public class DeckService: IDeckService
         };
 
         return await _deckRepository.Create(deckForRepository);
+    }
+
+    public async Task<bool> DeleteDeck(int deckId)
+    {
+        var deck = await _deckRepository.findById(deckId);
+        if (deck == null)
+        {
+            throw new ArgumentException("Deck doesn't exist.");
+        }
+        deck.MyStatus = EntityStatus.hidden;
+        return true; 
     }
 
     public Task<IEnumerable<string>> GetAllArchetypes()

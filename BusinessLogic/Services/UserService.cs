@@ -26,6 +26,12 @@ if (municipality == null || municipality.Province.ProvinceName != model.Province
     return IdentityResult.Failed(new IdentityError { Description = "Invalid Municipality or Province name" });
 }
 
+    var player = await _userRepository.findPlayerByName(model.UserName);
+    if (player != null)
+    {
+        return IdentityResult.Failed(new IdentityError { Description = "Invalid name" });
+    }
+
 // Create the user
 Player user = new Player
 {
@@ -48,12 +54,21 @@ Player user = new Player
     else
     {
         AdministrativeUser user;
+        var admininUser = await _userRepository.findAdminUserByName(model.UserName);
+    if (admininUser != null)
+    {
+        return IdentityResult.Failed(new IdentityError { Description = "Invalid name" });
+    }
         user = new AdministrativeUser { UserName = model.UserName };
         var result = await _userRepository.CreateAsync(user, model.Password);
         if (result.Succeeded)
         {
             // Assign the role to the user
-            await _userRepository.AddToRoleAsync(user, model.Role);
+            await _userRepository.AddToRoleAsync(user, "Administrator");
+            if (model.Role == "SuperAdministrator")
+            {
+                await _userRepository.AddToRoleAsync(user, "SuperAdministrator");
+            }
         }
 
         return result;
@@ -62,13 +77,27 @@ Player user = new Player
 
     public async Task<IdentityUser<int>> LoginAsync(LoginDto model)
     {
-        var user = await _userManager.FindByNameAsync(model.UserName);
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+        if (model.Role == "Player")
+        {
+            var user = await _userRepository.findPlayerByName(model.UserName);
+            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
         {
             return user;
         }
 
         return null;
+        }else
+        {
+            var user = await _userRepository.findAdminUserByName(model.UserName);
+            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+        {
+            return user;
+        }
+
+        return null;
+        }
+        
+        
     }
 
     public async Task<IList<string>> GetUserRolesAsync(IdentityUser<int> user)
@@ -106,7 +135,7 @@ Player user = new Player
         MunicipalityName = player.Municipality.Name,
         ProvinceId = player.Municipality.ProvinceId,
         ProvinceName = player.Municipality.Province.ProvinceName,
-        Decks = player.Decks.Select(d => new DeckOutDto 
+        Decks = player.Decks.Where(d => d.MyStatus == EntityStatus.visible).Select(d => new DeckOutDto 
         { 
             Id = d.Id,
             Name = d.Name, 
@@ -143,18 +172,56 @@ Player user = new Player
     }
 
     public async Task<PlayerOutDto> UpdatePlayer(PlayerInDto user)
-    {
-        throw new ArgumentException("Not implemented");
-        // var player = await _userRepository.findPlayerById(user.Id);
-        // player.Address = user.Address;
-        // player.PasswordHash = 
+{
+    var player = await _userRepository.findPlayerById(user.Id);
 
+    var municipality = await _municipalityRepository.findByName(user.MunicipalityName);
+    if (municipality == null || municipality.Province.ProvinceName != user.ProvinceName)
+    {
+        throw new ArgumentException("Ese municipio es inválido.");
+    }
+    // Update the player's attributes
+    player.UserName = user.UserName;
+    player.Address = user.Address;
+    player.PhoneNumber = user.PhoneNumber;
+    player.MunicipalityId = municipality.Id;
+    player.PasswordHash = _userManager.PasswordHasher.HashPassword(player, user.Password);
+
+    // Save the changes
+    var result = await _userRepository.UpdateUserAsync(player);
+    if (!result.Succeeded)
+    {
+        throw new ArgumentException("Error en el nombre");
     }
 
-    public async Task<AdminOutDto> UpdateAdmin(int id, string address, string adminName)
+    var playerOutDto = new PlayerOutDto
     {
-        throw new ArgumentException("Not implemented");
-        //var admin = await _userRepository.findAdminById(id);
+        UserName = user.UserName,
+        Address = user.Address,
+        Money = player.Money,
+        PhoneNumber = user.PhoneNumber,
+        MunicipalityId = municipality.Id,
+        MunicipalityName = municipality.Name,
+        ProvinceId = municipality.ProvinceId,
+        ProvinceName = municipality.Province.ProvinceName,
+    };
+
+    return playerOutDto;
+}
+
+    public async Task<AdminOutDto> UpdateAdmin(AdminInDto adminInDto)
+    {
+        var admin = await _userRepository.findAdminById(adminInDto.id);
+        admin.PasswordHash = _userManager.PasswordHasher.HashPassword(admin, adminInDto.Password);
+        admin.UserName = adminInDto.Name;
+         await _userRepository.UpdateUserAsync(admin);
+
+    // Map the player to PlayerOutDto
+    var adminOutDto = new AdminOutDto
+    {
+        Name = adminInDto.Name,
+    };
+    return adminOutDto;
     }
 }
 

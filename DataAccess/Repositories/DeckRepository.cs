@@ -19,17 +19,20 @@ public class DeckRepository: IDeckRepository
 public async Task<Deck> findByName(string name)
 {
     return await _context.Decks
+        .Where(d => d.MyStatus == EntityStatus.visible)
         .FirstOrDefaultAsync(m => m.Name == name);
 }
 public async Task<Deck> findById(int Id)
 {
     return await _context.Decks
+        .Where(d => d.MyStatus == EntityStatus.visible)
         .FirstOrDefaultAsync(m => m.Id == Id);
 }
 
 public async Task<IEnumerable<DeckArchetypeCountDto>> GetDeckArchetypeCount()
 {
     var deckCounts = await _context.Decks
+        .Where(d => d.MyStatus == EntityStatus.visible)
         .GroupBy(d => d.Archetype)
         .Select(g => new DeckArchetypeCountDto
         {

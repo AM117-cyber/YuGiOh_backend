@@ -4,4 +4,5 @@ public interface IDeckService
     Task<Deck> GetByName(string name);
     Task<IEnumerable<DeckArchetypeCountDto>> GetDeckArchetypeCount();
     Task<IEnumerable<string>> GetAllArchetypes();
+    Task<bool> DeleteDeck(int deckId);
 }

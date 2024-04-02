@@ -7,4 +7,5 @@ public interface ITournamentMatchService
     Task<TournamentMatchOutDto> GetByPlayers(int player1Id, int player2Id);
     Task<IEnumerable<(string, int)>> getPlayersWithVictories(DateTime startDate, DateTime endDate);
     Task<IEnumerable<(string, int)>> mostPopularArchetypeInTournamentRound(int tournamentId, int round);
+    Task<(IEnumerable<TournamentMatchOutDto> otherRounds, IEnumerable<TournamentMatchOutDto> RoundCero)> GetAllMatches(int tournamentId);
 }

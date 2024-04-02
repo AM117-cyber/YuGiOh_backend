@@ -20,7 +20,7 @@ public class TournamentMatchService: ITournamentMatchService
         {
             throw new ArgumentException("Impossible score");
         }
-        DateTime date = DateTime.Parse(tournamentMatch.Date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+        DateTimeOffset date = DateTimeOffset.Parse(tournamentMatch.Date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
         var newTournamentMatch = new TournamentMatch
         {
             Player1Id = tournamentMatch.Player1Id,
@@ -29,7 +29,7 @@ public class TournamentMatchService: ITournamentMatchService
             Player2Score = tournamentMatch.Player2Score,
             Round = tournamentMatch.Round,
             TournamentId = tournamentMatch.TournamentId,
-            Date = date
+            Date = date.UtcDateTime,
         };
         var t = await _tournamentMatchRepository.CreateTournamentMatch(newTournamentMatch);
         var result = new TournamentMatchOutDto
@@ -40,7 +40,7 @@ public class TournamentMatchService: ITournamentMatchService
             Player2Score = t.Player2Score,
             Round = t.Round,
             Id = t.Id,
-            Date = date
+            Date = date.UtcDateTime,
         };
         return result;
 
@@ -80,7 +80,7 @@ public class TournamentMatchService: ITournamentMatchService
 
     public async Task<IEnumerable<TournamentMatchOutDto>> GetTournamentMatches(int tournamentId)
     {
-        var matches = await _tournamentMatchRepository.GetTournamentMatches(tournamentId);
+        var matches = await _tournamentMatchRepository.GetTournamentMatchesOtherThan0(tournamentId);
         var result = matches.Select(tp => new TournamentMatchOutDto
     {
             Player1Id = tp.Player1Id,
@@ -96,12 +96,12 @@ public class TournamentMatchService: ITournamentMatchService
 
     public async Task<TournamentMatchOutDto> UpdateTournamentMatch(int matchId, int player1Score, int player2Score, string date)
     {
-        DateTime ParsedDate = DateTime.Parse(date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+        DateTimeOffset ParsedDate = DateTimeOffset.Parse(date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
 
         var tournamentMatch = await _tournamentMatchRepository.findById(matchId);
         tournamentMatch.Player1Score = player1Score;
         tournamentMatch.Player2Score = player2Score;
-        tournamentMatch.Date = ParsedDate.ToUniversalTime();
+        tournamentMatch.Date = ParsedDate.UtcDateTime;
         await _tournamentMatchRepository.UpdateTournamentMatch(tournamentMatch);
         var result = new TournamentMatchOutDto 
         {
@@ -141,4 +141,32 @@ public class TournamentMatchService: ITournamentMatchService
         return result;
 }
 
+    public async Task<(IEnumerable<TournamentMatchOutDto> otherRounds, IEnumerable<TournamentMatchOutDto> RoundCero)> GetAllMatches(int tournamentId)
+    {
+       var otherRoundMatches = await _tournamentMatchRepository.GetTournamentMatchesOtherThan0(tournamentId);
+        var otherRounds = otherRoundMatches.Select(tp => new TournamentMatchOutDto
+    {
+            Player1Id = tp.Player1Id,
+            Player1Score = tp.Player1Score,
+            Player2Id = tp.Player2Id,
+            Player2Score = tp.Player2Score,
+            Round = tp.Round,
+            Date = tp.Date,
+            Id = tp.Id
+    }).ToList();
+
+    var roundCeroMatches = await _tournamentMatchRepository.GetRoundMatches(tournamentId, 0);
+        var roundCero = roundCeroMatches.Select(tp => new TournamentMatchOutDto
+    {
+            Player1Id = tp.Player1Id,
+            Player1Score = tp.Player1Score,
+            Player2Id = tp.Player2Id,
+            Player2Score = tp.Player2Score,
+            Round = tp.Round,
+            Date = tp.Date,
+            Id = tp.Id
+    }).ToList();
+
+    return (otherRounds, roundCero);
+    }
 }

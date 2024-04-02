@@ -4,6 +4,8 @@ public class TournamentOutDto
   public string Name {get; set;}
   public string Address {get; set;}
   public DateTime StartDate {get; set;}
+  public TournamentStatus Status {get; set; }
+  public int PlayersSubscribed {get; set; }
   public int Rounds {get; set;}
   public int PlayerAmount {get; set;}
   public int AdministrativeUserId {get; set;}

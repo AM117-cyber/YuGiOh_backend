@@ -56,9 +56,17 @@ public async Task<IEnumerable<Tournament>> GetTournamentsByAdmin(int adminUserId
 
     public async Task<IEnumerable<Tournament>> GetUpcomingTournaments()
     {
+        
         return await _context.Tournaments
-        .Where(t => t.StartDate > DateTime.Today)
+        .Where(t => t.StartDate > DateTime.UtcNow)
         .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Tournament>> GetStartedTournaments()
+    {
+         return await _context.Tournaments
+            .Where(t => t.Status == TournamentStatus.started)
+            .ToListAsync();
     }
 
         public async Task<IEnumerable<Tournament>> GetAllTournaments()
@@ -80,10 +88,19 @@ public async Task<IEnumerable<Tournament>> GetTournamentsByAdmin(int adminUserId
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Tournament>> GetAllTournamentsWithMatches()
+    public async Task<IEnumerable<Tournament>> GetStartedTournamentsWithMatches()
     {
         return await _context.Tournaments
                 .Include(t => t.TournamentMatches)
+                .Where(t => t.Status == TournamentStatus.started)
                 .ToListAsync();
     }
+
+    public async Task<IEnumerable<Tournament>> GetTournamentsAwaitingConfirmation()
+    {
+        return await _context.Tournaments
+        .Where(t => t.StartDate < DateTime.UtcNow && t.Status == TournamentStatus.pendant)
+        .ToListAsync();
+    }
+
 }

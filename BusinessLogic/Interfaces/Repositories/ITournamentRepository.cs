@@ -7,8 +7,10 @@ public interface ITournamentRepository
     Task<Tournament> findByIdWithPlayers(int Id);
     Task<IEnumerable<Tournament>> GetTournamentsByAdmin(int adminUserId);
     Task<IEnumerable<Tournament>> GetUpcomingTournaments();
+    Task<IEnumerable<Tournament>> GetTournamentsAwaitingConfirmation();
+    Task<IEnumerable<Tournament>> GetStartedTournaments();
     Task UpdateTournament(Tournament tournament);
     Task DeleteTournament(Tournament tournament);
     Task<IEnumerable<Tournament>> GetAllTournaments();
-    Task<IEnumerable<Tournament>> GetAllTournamentsWithMatches();
+    Task<IEnumerable<Tournament>> GetStartedTournamentsWithMatches();
 }

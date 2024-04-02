@@ -15,9 +15,9 @@ public class TournamentService: ITournamentService
 
     public async Task<Tournament> CreateTournament(TournamentInDto tournament)
     {
-        DateTime ParsedStartDate = DateTime.Parse(tournament.StartDate, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+        DateTimeOffset ParsedStartDate = DateTimeOffset.Parse(tournament.StartDate, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
     // Check that the StartDate is in the future
-    if (ParsedStartDate <= DateTime.Now)
+    if (ParsedStartDate.UtcDateTime <= DateTime.UtcNow)
     {
         throw new ArgumentException("StartDate must be in the future.");
     }
@@ -45,8 +45,10 @@ public class TournamentService: ITournamentService
             Address = tournament.Address,
             Name = tournament.Name,
             Rounds = tournament.Rounds,
-            StartDate = ParsedStartDate.ToUniversalTime(),
+            StartDate = ParsedStartDate.UtcDateTime,
             PlayerAmount = tournament.PlayerAmount,
+            Status = TournamentStatus.started,
+            PlayersSubscribed = 0,
             AdministrativeUserId = tournament.AdministrativeUserId
         };
 
@@ -61,7 +63,7 @@ public class TournamentService: ITournamentService
         throw new Exception("Tournament not found");
     }
 
-    if (tournament.StartDate <= DateTime.Today)
+    if (tournament.Status == TournamentStatus.started)
     {
         throw new Exception("Tournament has already started and cannot be deleted");
     }
@@ -78,6 +80,8 @@ public class TournamentService: ITournamentService
         Id = t.Id, 
         StartDate = t.StartDate,
         Rounds = t.Rounds,
+        Status = t.Status,
+        PlayersSubscribed = t.PlayersSubscribed,
         Address = t.Address,
         PlayerAmount = t.PlayerAmount
     }).ToList();
@@ -92,6 +96,8 @@ public class TournamentService: ITournamentService
         Name = tournament.Name, 
         Id = tournament.Id, 
         StartDate = tournament.StartDate,
+        Status = tournament.Status,
+        PlayersSubscribed = tournament.PlayersSubscribed,
         Rounds = tournament.Rounds,
         Address = tournament.Address,
         PlayerAmount = tournament.PlayerAmount
@@ -108,6 +114,8 @@ public class TournamentService: ITournamentService
         Id = t.Id, 
         StartDate = t.StartDate,
         Rounds = t.Rounds,
+        Status = t.Status,
+        PlayersSubscribed = t.PlayersSubscribed,
         Address = t.Address,
         PlayerAmount = t.PlayerAmount
     }).ToList();
@@ -118,6 +126,23 @@ public class TournamentService: ITournamentService
     public async Task<IEnumerable<TournamentOutDto>> GetUpcomingTournaments()
     {
         var tournaments = await _tournamentRepository.GetUpcomingTournaments();
+        var tournamentOutDtos = tournaments.Select(t => new TournamentOutDto 
+    { 
+        Name = t.Name, 
+        Id = t.Id, 
+        StartDate = t.StartDate,
+        PlayersSubscribed = t.PlayersSubscribed,
+        Rounds = t.Rounds,
+        Address = t.Address,
+        PlayerAmount = t.PlayerAmount
+    }).ToList();
+
+    return tournamentOutDtos;
+    }
+
+    public async Task<IEnumerable<TournamentOutDto>> GetStartedTournaments()
+    {
+        var tournaments = await _tournamentRepository.GetStartedTournaments();
         var tournamentOutDtos = tournaments.Select(t => new TournamentOutDto 
     { 
         Name = t.Name, 
@@ -140,14 +165,14 @@ public class TournamentService: ITournamentService
         throw new Exception("Tournament not found");
     }
 
-    if (tournament.StartDate <= DateTime.Today)
+    if (tournament.Status == TournamentStatus.started)
     {
         throw new Exception("Tournament has already started and cannot be updated");
     }
-    DateTime ParsedStartDate = DateTime.Parse(tournamentInDto.StartDate, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+    DateTimeOffset ParsedStartDate = DateTimeOffset.Parse(tournamentInDto.StartDate, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
 
     tournament.Name = tournamentInDto.Name;
-    tournament.StartDate = ParsedStartDate.ToUniversalTime();
+    tournament.StartDate = ParsedStartDate.UtcDateTime;
     tournament.Address = tournamentInDto.Address;
     tournament.Rounds = tournamentInDto.Rounds;
     tournament.PlayerAmount = tournamentInDto.PlayerAmount;
@@ -160,7 +185,7 @@ public class TournamentService: ITournamentService
     {
         var tournament = await _tournamentRepository.findByIdWithMatches(tournamentId);
 
-        var finalRound = tournament.Rounds;
+        var finalRound = 1;
         var finalMatch = tournament.TournamentMatches
             .FirstOrDefault(tm => tm.Round == finalRound);
 
@@ -195,7 +220,7 @@ public class TournamentService: ITournamentService
     foreach (var tournamentId in tournamentsIds)
     {
         var tournament = await _tournamentRepository.findByIdWithMatches(tournamentId);
-        var finalRound = tournament.Rounds;
+        var finalRound = 1;
         var finalMatch = tournament.TournamentMatches
             .FirstOrDefault(tm => tm.Round == finalRound);
 
@@ -221,6 +246,36 @@ public class TournamentService: ITournamentService
     return result;
 }
 
+    public async Task<IEnumerable<TournamentOutDto>> GetTournamentsAwaitingConfirmation()
+    {
+        var tournaments = await _tournamentRepository.GetTournamentsAwaitingConfirmation();
+        var tournamentOutDtos = tournaments.Select(t => new TournamentOutDto 
+    { 
+        Name = t.Name, 
+        Id = t.Id, 
+        StartDate = t.StartDate,
+        Rounds = t.Rounds,
+        Status = t.Status,
+        PlayersSubscribed = t.PlayersSubscribed,
+        Address = t.Address,
+        PlayerAmount = t.PlayerAmount
+    }).ToList();
+
+    return tournamentOutDtos;
+    
+    }
+
+    public async Task<bool> ConfirmTournamentStart(int tournamentId)
+    {
+        var tournament = await _tournamentRepository.findById(tournamentId);
+        if (tournament.StartDate < DateTime.UtcNow && tournament.PlayersSubscribed == tournament.PlayerAmount)
+        {
+            tournament.Status = TournamentStatus.started;
+            await _tournamentRepository.UpdateTournament(tournament);
+            return true;
+        }
+        throw new ArgumentException("El torneo no es válido para comenzar");
+    }
 }
 
 

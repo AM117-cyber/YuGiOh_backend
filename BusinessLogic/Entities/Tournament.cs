@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net;
 
 public class Tournament
 {
@@ -18,6 +19,8 @@ public class Tournament
     
     [Required]
     public int Rounds { get; set; }
+    public TournamentStatus Status {get; set; }
+    public int PlayersSubscribed {get; set; }
     
     [Required]
     public int PlayerAmount { get; set; }

@@ -35,10 +35,10 @@ public class TournamentMatchRepository: ITournamentMatchRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<TournamentMatch>> GetTournamentMatches(int tournamentId)
+    public async Task<IEnumerable<TournamentMatch>> GetTournamentMatchesOtherThan0(int tournamentId)
     {
         return await _context.TournamentMatches
-            .Where(m => m.TournamentId == tournamentId)
+            .Where(m => m.TournamentId == tournamentId && m.Round != 0)
             .ToListAsync();
     }
 

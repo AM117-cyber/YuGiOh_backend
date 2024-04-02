@@ -41,4 +41,11 @@ public class TournamentMatchController : ControllerBase
         return matches;
     }
 
+    [HttpGet("getAllMatches/{tournamentId}")]
+    public async Task<(IEnumerable<TournamentMatchOutDto> otherRounds, IEnumerable<TournamentMatchOutDto> RoundCero)> GetAllMatches(int tournamentId)
+    {
+        var matches = await _tournamentMatchService.GetAllMatches(tournamentId);
+        return matches;
+    }
+
 }
