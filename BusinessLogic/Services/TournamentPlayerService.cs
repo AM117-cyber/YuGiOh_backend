@@ -102,14 +102,19 @@ public class TournamentPlayerService: ITournamentPlayerService
     {
         var tournamentPlayers = await _tournamentPlayerRepository.TournamentPlayersByTournament(tournamentId);
         var archetypes = tournamentPlayers
-            .GroupBy(tp => tp.Deck.Archetype)
+            .GroupBy(tp => tp.Deck)
             .Select(tp => (Archetype: tp.Key, Count: tp.Count()))
             .OrderByDescending(t => t.Count);
         int maxCount = archetypes.First().Count;
         var result = archetypes
             .Where(a => a.Count == maxCount)
             .Select(tp => tp.Archetype);
-        return (result, maxCount);
+            List<string> answer = [];
+            foreach (var item in result)
+            {
+                answer.Add(item.Archetype);
+            }
+        return (answer, maxCount);
     }
 
     public async Task<IEnumerable<(string, int)>> mostPopularArchetypes()
@@ -155,7 +160,7 @@ public class TournamentPlayerService: ITournamentPlayerService
             var maxCount = result.First().Count;
             var mostPopularMunicipalities = result
                     .Where(m => m.Count == maxCount)
-                    .Select(m => new MunicipalityOutDto { Name = m.Name, ProvinceName = m.ProvinceName });
+                    .Select(m => new MunicipalityOutDto { Name = m.Name });
         //get all players with municipality that are in the list of winners, group by municipality, get maxCount and return those that have it
         return (mostPopularMunicipalities, maxCount);
     }

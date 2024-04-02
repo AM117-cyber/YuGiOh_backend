@@ -45,9 +45,10 @@ public class StatisticsController : ControllerBase
     }
 
     [HttpGet("mostPopularMunicipalityForArchetype/{archetype}")]
-    public async Task<(IEnumerable<MunicipalityOutDto>, int)> MostPopularMunicipalityForArchetype(string archetype)
+    public async Task<(MunicipalityOutDto, int)> MostPopularMunicipalityForArchetype(string archetype)
     {
         return await _userService.MostPopularMunicipalityForArchetype(archetype);
+        
     }
 
     [HttpGet("getChampion/{tournamentId}")]

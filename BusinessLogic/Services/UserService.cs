@@ -160,15 +160,13 @@ Player user = new Player
         return result;
     }
 
-    public async Task<(IEnumerable<MunicipalityOutDto>, int)> MostPopularMunicipalityForArchetype(string archetype)
+    public async Task<(MunicipalityOutDto, int)> MostPopularMunicipalityForArchetype(string archetype)
     {
-        (IEnumerable<Municipality> municipalities, int count) result = await _userRepository.GetMostPopularMunicipalityForArchetype(archetype);
-        IEnumerable<MunicipalityOutDto> municipalityOutDtos = result.municipalities.Select(m => new MunicipalityOutDto 
-        { 
-            Name = m.Name,
-            ProvinceName = m.Province.ProvinceName
-        }).ToList();
-        return (municipalityOutDtos, result.count);
+        (Municipality municipalities, int count) result = await _userRepository.GetMostPopularMunicipalityForArchetype(archetype);
+        MunicipalityOutDto municipalityOutDto = new MunicipalityOutDto{
+            Name = result.municipalities.Name
+        };
+        return (municipalityOutDto, result.count);
     }
 
     public async Task<PlayerOutDto> UpdatePlayer(PlayerInDto user)

@@ -25,9 +25,11 @@ public async Task<Tournament> findByName(string name)
 
 public async Task<Tournament> findById(int Id)
 {
+    
     return await _context.Tournaments
-        .Include(t => t.Administrator) // Eager loading
-        .FirstOrDefaultAsync(m => m.Id == Id);
+        .Where(m => m.Id == Id)
+        //.Include(t => t.Administrator) // Eager loading
+        .FirstOrDefaultAsync();
 }
 
 public async Task<Tournament> findByIdWithMatches(int Id)

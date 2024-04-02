@@ -15,7 +15,7 @@ public class TournamentPlayerRepository: ITournamentPlayerRepository
     public async Task<IEnumerable<TournamentPlayer>> AllTournamentPlayersWithArchetypes()
     {
         return await _context.TournamentPlayers
-                        .Include(tp => tp.Deck.Archetype)
+                        .Include(tp => tp.Deck)
                         .ToListAsync();
     }           
     public async Task<TournamentPlayer> Create(TournamentPlayer tournamentPlayer)
@@ -40,7 +40,7 @@ public async Task<bool> findTournamentPlayer(TournamentPlayerInDto tournamentPla
 {
     var existingTournamentPlayer = await _context.TournamentPlayers
         .AnyAsync(tp => tp.PlayerId == tournamentPlayer.PlayerId && tp.TournamentId == tournamentPlayer.TournamentId);
-    return existingTournamentPlayer != null;
+    return existingTournamentPlayer;
 }
 public async Task<TournamentPlayer> findById(int Id)
 {
@@ -105,7 +105,7 @@ public async Task DeleteSolicitude(int tournamentPlayerId)
     {
         var tournamentPlayers = await _context.TournamentPlayers
             .Where(tp => tp.TournamentId == tournamentId && playersIds.Contains(tp.PlayerId))
-            .Include(tp => tp.Deck.Archetype)
+            .Include(tp => tp.Deck)
             .ToListAsync();
 
         return tournamentPlayers;

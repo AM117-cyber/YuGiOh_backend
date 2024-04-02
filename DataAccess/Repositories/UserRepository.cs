@@ -183,13 +183,13 @@ public async Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
     // Get the locations with the max count
     var mostPopularLocations = groupedResults
         .Where(g => g.Count == maxCount)
-        .Select(g => g.Location)
+        .Select(g => g.Location.ToString())
         .ToList();
 
     return (mostPopularLocations, maxCount);
 }
 
-    public async Task<(IEnumerable<Municipality>, int)> GetMostPopularMunicipalityForArchetype(string givenArchetype)
+    public async Task<(Municipality, int)> GetMostPopularMunicipalityForArchetype(string givenArchetype)
 {
     // Execute the query once and store the results in memory
     var groupedResults = await _userManager.Users
@@ -206,7 +206,8 @@ public async Task<IEnumerable<PlayerDeckCountDto>> GetPlayersDeckCount()
     var mostPopularLocations = groupedResults
         .Where(g => g.Count == maxCount)
         .Select(g => g.Location)
-        .ToList();
+        .ToList()
+        .First();
 
     return (mostPopularLocations, maxCount);
 }

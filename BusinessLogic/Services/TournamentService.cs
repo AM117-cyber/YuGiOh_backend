@@ -29,7 +29,7 @@ public class TournamentService: ITournamentService
     }
 
     // Check that the number of players is greater than 10
-    if (tournament.PlayerAmount <= 10)
+    if (tournament.PlayerAmount <= 7)
     {
         throw new ArgumentException("PlayerAmount must be greater than 10.");
     }
@@ -47,7 +47,7 @@ public class TournamentService: ITournamentService
             Rounds = tournament.Rounds,
             StartDate = ParsedStartDate.UtcDateTime,
             PlayerAmount = tournament.PlayerAmount,
-            Status = TournamentStatus.started,
+            Status = TournamentStatus.pendant,
             PlayersSubscribed = 0,
             AdministrativeUserId = tournament.AdministrativeUserId
         };
@@ -63,10 +63,10 @@ public class TournamentService: ITournamentService
         throw new Exception("Tournament not found");
     }
 
-    if (tournament.Status == TournamentStatus.started)
-    {
-        throw new Exception("Tournament has already started and cannot be deleted");
-    }
+    // if (tournament.Status == TournamentStatus.started)
+    // {
+    //     throw new Exception("Tournament has already started and cannot be deleted");
+    // }
     await _tournamentPlayerRepository.DeleteTournamentPlayers(tournament.TournamentPlayers);
     await _tournamentRepository.DeleteTournament(tournament);
     }

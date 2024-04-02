@@ -135,10 +135,15 @@ public class TournamentMatchService: ITournamentMatchService
             .Distinct(); // Remove duplicates
         IEnumerable<TournamentPlayer> tournamentPlayers = await _tournamentPlayerRepository.TournamentPlayerWithDeckArchetype(tournamentId, playersIds);    
         var result = tournamentPlayers
-            .GroupBy(tp => tp.Deck.Archetype)
-            .Select(g => (Archetype: g.Key, Count: g.Count()))
+            .GroupBy(tp => tp.Deck)
+            .Select(g => (Deck: g.Key, Count: g.Count()))
             .OrderByDescending(t => t.Count);
-        return result;
+            List<(string,int)> answer = [];
+            foreach (var item in result)
+            {
+                answer.Add((item.Deck.Archetype, item.Count));
+            }
+        return answer;
 }
 
     public async Task<(IEnumerable<TournamentMatchOutDto> otherRounds, IEnumerable<TournamentMatchOutDto> RoundCero)> GetAllMatches(int tournamentId)
