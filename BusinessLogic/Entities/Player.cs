@@ -9,7 +9,6 @@ public class Player : IdentityUser<int>
     // public int Id { get; set; }
     // public required string Name { get; set; }
     public required string Address { get; set; }
-    public required string PhoneNumber { get; set; }
     public double Money { get; set; }
     public virtual ICollection<Deck> Decks { get; set; }
     [InverseProperty("Player")]
